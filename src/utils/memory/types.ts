@@ -1,4 +1,4 @@
-import { feature } from 'bun:bundle'
+import { feature } from 'src/_stubs/bun-bundle.js'
 
 export const MEMORY_TYPE_VALUES = [
   'User',

@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
+    "strict": true,
+    "esModuleInterop": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": false,
+    "allowJs": true,
+    "paths": {
+      "src/*": ["./src/*"]
+    },
+    "baseUrl": ".",
+    "types": ["bun-types"]
+  },
+  "include": ["src/**/*", "stubs/**/*"],
+  "exclude": ["node_modules"]
+}

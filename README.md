@@ -36,6 +36,68 @@ The published source map referenced unobfuscated TypeScript sources hosted in An
 
 ---
 
+## Running from Source
+
+### Prerequisites
+
+- [Bun](https://bun.sh) (latest)
+- macOS (tested on Darwin 25.x)
+
+### Setup
+
+```bash
+# 1. Clone and install dependencies
+git clone https://github.com/IIIIQIIII/claude-code.git && cd claude-code
+bun install
+
+# 2. Configure API access in ~/.claude/settings.json
+cat > ~/.claude/settings.json << 'EOF'
+{
+  "env": {
+    "DISABLE_AUTOUPDATER": "1",
+    "ANTHROPIC_BASE_URL": "https://api.anthropic.com",
+    "ANTHROPIC_AUTH_TOKEN": "your-api-key-here"
+  }
+}
+EOF
+```
+
+> If using a third-party proxy, set `ANTHROPIC_BASE_URL` to the proxy endpoint.
+
+### Usage
+
+```bash
+# Interactive mode
+./run-claude.sh
+
+# Or via bun directly
+bun start
+
+# Print mode (single query, non-interactive)
+./run-claude.sh -p "hello"
+
+# With specific model
+./run-claude.sh --model claude-sonnet-4-20250514
+```
+
+### What was patched to make it run
+
+The npm source snapshot required several fixes to run outside Anthropic's build pipeline:
+
+| File | Fix |
+|---|---|
+| `stubs/globals.ts` | Build-time macro stubs (`MACRO.VERSION`, etc.) |
+| `stubs/@anthropic-ai/sandbox-runtime/` | Sandbox manager stub (all static methods) |
+| `stubs/color-diff-napi/` | Syntax highlighting stub (`ColorFile.render()`) |
+| `src/utils/modifiers.ts` | try-catch for missing `modifiers-napi` native module |
+| `src/services/api/withRetry.ts` | `error.headers?.get()` → bracket access (SDK headers are plain objects) |
+| `src/services/api/errors.ts` | Same header access fix for rate limit headers |
+| `src/utils/ultraplan/prompt.txt` | Missing file that caused silent module load failure |
+| `bunfig.toml` | Preload config for stubs |
+| `package.json` | Dependencies and stub package references |
+
+---
+
 ## Repository Scope
 
 Claude Code is Anthropic's CLI for interacting with Claude from the terminal to perform software engineering tasks such as editing files, running commands, searching codebases, and coordinating workflows.

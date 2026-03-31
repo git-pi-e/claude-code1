@@ -1,4 +1,4 @@
-import { feature } from 'bun:bundle'
+import { feature } from 'src/_stubs/bun-bundle.js'
 import type Anthropic from '@anthropic-ai/sdk'
 import {
   APIConnectionError,
@@ -272,9 +272,8 @@ export async function* withRetry<T>(
       ) {
         // If the 429 is specifically because extra usage (overage) is not
         // available, permanently disable fast mode with a specific message.
-        const overageReason = error.headers?.get(
-          'anthropic-ratelimit-unified-overage-disabled-reason',
-        )
+        const overageReason =
+          error.headers?.['anthropic-ratelimit-unified-overage-disabled-reason']
         if (overageReason !== null && overageReason !== undefined) {
           handleFastModeOverageRejection(overageReason)
           retryContext.fastMode = false
@@ -520,10 +519,7 @@ function getRetryAfter(error: unknown): string | null {
   return (
     ((error as { headers?: { 'retry-after'?: string } }).headers?.[
       'retry-after'
-    ] ||
-      // eslint-disable-next-line eslint-plugin-n/no-unsupported-features/node-builtins
-      ((error as APIError).headers as Headers)?.get?.('retry-after')) ??
-    null
+    ]) ?? null
   )
 }
 
@@ -729,7 +725,7 @@ function shouldRetry(error: APIError): boolean {
   }
 
   // Note this is not a standard header.
-  const shouldRetryHeader = error.headers?.get('x-should-retry')
+  const shouldRetryHeader = error.headers?.['x-should-retry']
 
   // If the server explicitly says whether or not to retry, obey.
   // For Max and Pro users, should-retry is true, but in several hours, so we shouldn't.
@@ -812,7 +808,7 @@ function getRetryAfterMs(error: APIError): number | null {
 }
 
 function getRateLimitResetDelayMs(error: APIError): number | null {
-  const resetHeader = error.headers?.get?.('anthropic-ratelimit-unified-reset')
+  const resetHeader = error.headers?.['anthropic-ratelimit-unified-reset']
   if (!resetHeader) return null
   const resetUnixSec = Number(resetHeader)
   if (!Number.isFinite(resetUnixSec)) return null

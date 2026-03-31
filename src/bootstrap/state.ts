@@ -1756,3 +1756,7 @@ export function setPromptId(id: string | null): void {
   STATE.promptId = id
 }
 
+// Stub: isReplBridgeActive was missing from source snapshot
+export function isReplBridgeActive(): boolean {
+  return false
+}

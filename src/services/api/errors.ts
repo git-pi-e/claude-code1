@@ -468,13 +468,13 @@ export function getAssistantMessageFromError(
     shouldProcessRateLimits(isClaudeAISubscriber())
   ) {
     // Check if this is the new API with multiple rate limit headers
-    const rateLimitType = error.headers?.get?.(
-      'anthropic-ratelimit-unified-representative-claim',
-    ) as 'five_hour' | 'seven_day' | 'seven_day_opus' | null
+    const rateLimitType = error.headers?.[
+      'anthropic-ratelimit-unified-representative-claim'
+    ] as 'five_hour' | 'seven_day' | 'seven_day_opus' | null
 
-    const overageStatus = error.headers?.get?.(
-      'anthropic-ratelimit-unified-overage-status',
-    ) as 'allowed' | 'allowed_warning' | 'rejected' | null
+    const overageStatus = error.headers?.[
+      'anthropic-ratelimit-unified-overage-status'
+    ] as 'allowed' | 'allowed_warning' | 'rejected' | null
 
     // If we have the new headers, use the new message generation
     if (rateLimitType || overageStatus) {
@@ -486,9 +486,8 @@ export function getAssistantMessageFromError(
       }
 
       // Extract rate limit information from headers
-      const resetHeader = error.headers?.get?.(
-        'anthropic-ratelimit-unified-reset',
-      )
+      const resetHeader =
+        error.headers?.['anthropic-ratelimit-unified-reset']
       if (resetHeader) {
         limits.resetsAt = Number(resetHeader)
       }
@@ -501,16 +500,15 @@ export function getAssistantMessageFromError(
         limits.overageStatus = overageStatus
       }
 
-      const overageResetHeader = error.headers?.get?.(
-        'anthropic-ratelimit-unified-overage-reset',
-      )
+      const overageResetHeader =
+        error.headers?.['anthropic-ratelimit-unified-overage-reset']
       if (overageResetHeader) {
         limits.overageResetsAt = Number(overageResetHeader)
       }
 
-      const overageDisabledReason = error.headers?.get?.(
-        'anthropic-ratelimit-unified-overage-disabled-reason',
-      ) as OverageDisabledReason | null
+      const overageDisabledReason = error.headers?.[
+        'anthropic-ratelimit-unified-overage-disabled-reason'
+      ] as OverageDisabledReason | null
       if (overageDisabledReason) {
         limits.overageDisabledReason = overageDisabledReason
       }
