@@ -38,6 +38,8 @@ The published source map referenced unobfuscated TypeScript sources hosted in An
 
 ## Running from Source
 
+![Claude Code running from source](assets/claude-code-screenshot.png)
+
 ### Prerequisites
 
 - [Bun](https://bun.sh) (latest)
